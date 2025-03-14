@@ -1,0 +1,95 @@
+services:
+  api_gateway:
+    image: traefik:v2.5
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - gateway_network
+    env_file:
+      - ./.envs/.local
+
+  transaction_service:
+    build:
+      context: ./services/transaction_service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/transaction_service:/app
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - broker
+    env_file:
+      - ./.envs/.local
+
+  seller_dashboard:
+    build:
+      context: ./services/seller_dashboard
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/seller_dashboard:/app
+    networks:
+      - app_network
+    depends_on:
+      - db
+    env_file:
+      - ./.envs/.local
+
+  customer_portal:
+    build:
+      context: ./services/customer_portal
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./services/customer_portal:/app
+    networks:
+      - app_network
+    env_file:
+      - ./.envs/.local
+
+  db:
+    image: postgres:13
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    env_file:
+      - ./.envs/.local
+
+  broker:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app_network
+    env_file:
+      - ./.envs/.local
+
+  secret_manager:
+    image: vault:latest
+    volumes:
+      - ./secret_manager/config.hcl:/vault/config/config.hcl
+    ports:
+      - "8200:8200"
+    networks:
+      - app_network
+    env_file:
+      - ./.envs/.local
+
+volumes:
+  pg_data:
+
+networks:
+  app_network:
+  gateway_network:
+

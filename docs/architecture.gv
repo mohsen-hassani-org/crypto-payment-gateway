@@ -1,0 +1,81 @@
+digraph CryptoPaymentGateway {
+    rankdir=LR;
+    node [shape=box, style=filled, color=lightblue];
+
+    subgraph cluster_gateway {
+        label = "API Gateway (Traefik)";
+        style = dashed;
+        traefik [label="Traefik", color=lightgreen];
+    }
+
+    subgraph cluster_services {
+        label = "Microservices";
+        style = dashed;
+
+        transaction_service [label="FastAPI Transaction Service"];
+        seller_dashboard [label="Django Seller Dashboard"];
+        customer_portal [label="React Customer Portal"];
+    }
+
+    subgraph cluster_db {
+        label = "Database & Cache";
+        style = dashed;
+
+        postgres [label="PostgreSQL"];
+        redis [label="Redis Cache"];
+    }
+
+    subgraph cluster_broker {
+        label = "Message Broker";
+        style = dashed;
+
+        rabbitmq [label="RabbitMQ"];
+    }
+
+    subgraph cluster_logging_monitoring {
+        label = "Logging & Monitoring";
+        style = dashed;
+
+        elk [label="ELK Stack"];
+        prometheus [label="Prometheus"];
+    }
+
+    subgraph cluster_secrets {
+        label = "Secret Management";
+        style = dashed;
+
+        vault [label="HashiCorp Vault"];
+    }
+
+    # Relationships
+    traefik -> transaction_service [label="Routes"];
+    traefik -> seller_dashboard [label="Routes"];
+    traefik -> customer_portal [label="Routes"];
+
+    transaction_service -> postgres [label="Uses DB"];
+    transaction_service -> redis [label="Uses Cache"];
+    transaction_service -> rabbitmq [label="Uses Message Queue"];
+    
+    seller_dashboard -> postgres [label="Uses DB"];
+    seller_dashboard -> redis [label="Uses Cache"];
+    seller_dashboard -> rabbitmq [label="Uses Message Queue"];
+    
+    customer_portal -> transaction_service [label="Interacts"];
+    customer_portal -> seller_dashboard [label="Interacts"];
+
+    transaction_service -> elk [label="Logs"];
+    seller_dashboard -> elk [label="Logs"];
+    customer_portal -> elk [label="Logs"];
+
+    transaction_service -> prometheus [label="Monitors"];
+    seller_dashboard -> prometheus [label="Monitors"];
+    customer_portal -> prometheus [label="Monitors"];
+
+    transaction_service -> vault [label="Uses Secrets"];
+    seller_dashboard -> vault [label="Uses Secrets"];
+
+    postgres -> vault [label="Uses Secrets"];
+    redis -> vault [label="Uses Secrets"];
+    rabbitmq -> vault [label="Uses Secrets"];
+}
+

@@ -1,0 +1,99 @@
+cryptopaymentgatewayproject/
+├── README.md                             # Project documentation
+├── docker-compose.local.yml              # Docker Compose file for local environment
+├── docker-compose.dev.yml                # Docker Compose file for development environment
+├── docker-compose.prod.yml               # Docker Compose file for production environment
+├── .envs                                 # Root-level environment variables
+│   ├── .local                            # Environment variables for local setup
+│   ├── .dev                              # Environment variables for development setup
+│   └── .prod                             # Environment variables for production setup
+├── .gitignore                            # Git ignore file
+├── gateway/                              # API Gateway (Traefik or other chosen gateway)
+│   ├── Dockerfile                        # Dockerfile for API Gateway
+│   ├── traefik.local.yml                 # Traefik configuration for local environment
+│   ├── traefik.dev.yml                   # Traefik configuration for development environment
+│   ├── traefik.prod.yml                  # Traefik configuration for production environment
+│   └── .env                              # API Gateway-specific environment variables
+├── logging_monitoring/                   # Logging and monitoring service (ELK Stack or Prometheus)
+│   ├── Dockerfile                        # Dockerfile for logging and monitoring service
+│   ├── config.local/                     # Local environment configuration for logging
+│   ├── config.dev/                       # Development environment configuration for logging
+│   ├── config.prod/                      # Production environment configuration for logging
+├── services/                             # All microservices
+│   ├── transaction_service/              # FastAPI-based transaction service
+│   │   ├── Dockerfile                    # Dockerfile for FastAPI service
+│   │   ├── pyproject.toml                # Poetry configuration for managing dependencies
+│   │   ├── poetry.lock                   # Poetry lockfile for dependency management
+│   │   ├── .envs                         # Transaction service environment variables
+│   │   │   ├── .local                    # Environment variables for local setup
+│   │   │   ├── .dev                      # Environment variables for development setup
+│   │   │   └── .prod                     # Environment variables for production setup
+│   │   ├── app/                          # FastAPI application
+│   │   │   ├── main.py                   # Entry point for FastAPI application
+│   │   │   ├── models.py                 # Database models for transactions and wallets
+│   │   │   ├── services/                 # Blockchain interaction services
+│   │   │   │   ├── bsc_service.py        # Logic for interacting with BSC blockchain
+│   │   │   │   └── wallet_service.py     # Logic for wallet address generation, deposits, withdrawals
+│   │   │   ├── db/                       # Database interaction code
+│   │   │   │   ├── async_db.py           # Asynchronous DB configuration and ORM setup
+│   │   │   └── brokers/                  # Message broker interaction layer
+│   │   │       ├── rabbitmq.py           # Code to interact with RabbitMQ for messaging
+│   │   └── tests/                        # Unit tests for transaction service
+│   │       ├── test_transactions.py      # Test cases for transaction service
+│   ├── seller_dashboard/                 # Django-based seller dashboard service
+│   │   ├── Dockerfile                    # Dockerfile for Django service
+│   │   ├── pyproject.toml                # Poetry configuration for managing dependencies
+│   │   ├── poetry.lock                   # Poetry lockfile for dependency management
+│   │   ├── .envs                         # Seller dashboard environment variables
+│   │   │   ├── .local                    # Environment variables for local setup
+│   │   │   ├── .dev                      # Environment variables for development setup
+│   │   │   └── .prod                     # Environment variables for production setup
+│   │   ├── manage.py                     # Django management command file
+│   │   ├── seller_dashboard/             # Django app
+│   │   │   ├── apps/                     # Contains different apps (authentication, user, etc.)
+│   │   │   ├── config/                   # Configuration files (settings, urls, wsgi)
+│   │   │   ├── templates/                # HTML templates for the dashboard
+│   │   │   ├── static/                   # Static assets (CSS, JS)
+│   │   │   └── utils/                    # Utility functions and mixins
+│   │   └── tests/                        # Unit tests for Django service
+│   │       └── test_dashboard.py         # Test cases for seller dashboard
+│   ├── customer_portal/                  # React-based customer interface
+│   │   ├── Dockerfile                    # Dockerfile for React app
+│   │   ├── package.json                  # Node package management config file
+│   │   ├── yarn.lock                     # Yarn lockfile for dependencies
+│   │   ├── .envs                         # Customer portal environment variables
+│   │   │   ├── .local                    # Environment variables for local setup
+│   │   │   ├── .dev                      # Environment variables for development setup
+│   │   │   └── .prod                     # Environment variables for production setup
+│   │   ├── src/                          # React source code
+│   │   │   ├── components/               # Reusable React components
+│   │   │   ├── pages/                    # Application pages
+│   │   │   └── services/                 # Logic to interact with FastAPI service
+├── db/                                   # Database service (PostgreSQL, for example)
+│   ├── Dockerfile                        # Dockerfile for PostgreSQL
+│   ├── init.sql                          # SQL init script to bootstrap the database
+│   ├── .envs                             # Customer portal environment variables
+│   │   ├── .local                        # Environment variables for local setup
+│   │   ├── .dev                          # Environment variables for development setup
+│   │   └── .prod                         # Environment variables for production setup
+├── broker/                               # Message broker (RabbitMQ)
+│   ├── Dockerfile                        # Dockerfile for RabbitMQ
+│   ├── .envs                             # Message broker environment variables
+│   │   ├── .local                        # Environment variables for local setup
+│   │   ├── .dev                          # Environment variables for development setup
+│   │   └── .prod                         # Environment variables for production setup
+├── redis/                                 # Redis cache service
+│   ├── Dockerfile                         # Dockerfile for Redis service
+│   ├── redis.conf                         # Optional Redis configuration file
+│   ├── .envs                              # Redis environment variables
+│   │   ├── .local                         # Environment variables for local setup
+│   │   ├── .dev                           # Environment variables for development setup
+│   │   └── .prod                          # Environment variables for production setup
+└── secret_manager/                       # Secret management service (HashiCorp Vault)
+    ├── Dockerfile                        # Dockerfile for HashiCorp Vault
+    ├── config.hcl                        # Vault configuration file
+    └── .envs                             # Secret manager environment variables
+        ├── .local                        # Environment variables for local setup
+        ├── .dev                          # Environment variables for development setup
+        └── .prod                         # Environment variables for production setup
+
